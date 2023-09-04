@@ -1,4 +1,5 @@
-﻿using Microsoft.EntityFrameworkCore;
+﻿using DailyDeen.Models.Auth;
+using Microsoft.EntityFrameworkCore;
 using System;
 using System.Collections.Generic;
 using System.Linq;
@@ -13,4 +14,6 @@ public class AppDbContext : DbContext
     {
 
     }
+
+    public DbSet<ApplicationUser> Users { get; set; }
 }
