@@ -13,6 +13,6 @@ public interface IAuthRepo
     Task<ApplicationUser> LoginUserAsync(string email, string password);
     Task<bool> UserExistsAsync(string email);
     Task<bool> ResetPasswordAsync(string email, string newPasswor);
-    string GenerateJwtToken(ApplicationUser user);
-    Task<ApplicationUser> FindUserByGoogleIdAsync(string googleId);
+    //string GenerateJwtToken(ApplicationUser user);
+    //Task<ApplicationUser> FindUserByGoogleIdAsync(string googleId);
 }

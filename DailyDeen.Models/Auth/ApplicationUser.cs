@@ -17,8 +17,8 @@ public class ApplicationUser
     public string Gender { get; set; }
 
     // Properties for Google authentication data
-    public string GoogleId { get; set; }
-    public string GoogleEmail { get; set; }
-    public string GoogleFirstName { get; set; }
-    public string GoogleLastName { get; set; }
+    //public string GoogleId { get; set; }
+    //public string GoogleEmail { get; set; }
+    //public string GoogleFirstName { get; set; }
+    //public string GoogleLastName { get; set; }
 }
