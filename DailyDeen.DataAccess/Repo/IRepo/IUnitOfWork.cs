@@ -4,9 +4,8 @@ using System.Linq;
 using System.Text;
 using System.Threading.Tasks;
 
-namespace DailyDeen.DataAccess.Repo.IRepo
+namespace DailyDeen.DataAccess.Repo.IRepo;
+
+public interface IUnitOfWork
 {
-    internal interface IUnitOfWork
-    {
-    }
 }

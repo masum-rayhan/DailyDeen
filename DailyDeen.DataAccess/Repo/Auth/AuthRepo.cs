@@ -66,7 +66,7 @@ public class AuthRepo : IAuthRepo
             return false;
 
         // Update the user's password with the new password
-        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(newPassword);
+        var hashedPassword = BCrypt.Net.BCrypt.HashPassword(newPasswor);
         user.PasswordHash = hashedPassword;
 
         // Save changes to the database
