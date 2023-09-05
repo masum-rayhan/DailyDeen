@@ -1,8 +1,10 @@
 ﻿using DailyDeen.DataAccess.Data;
 using DailyDeen.DataAccess.Repo.IRepo.Auth;
 using DailyDeen.Models.Auth;
+using Microsoft.AspNetCore.Authentication;
 using Microsoft.AspNetCore.Http;
 using Microsoft.AspNetCore.Mvc;
+using System.Security.Claims;
 
 namespace DailyDeen.Web.Controllers.Auth;
 
@@ -64,7 +66,7 @@ public class AuthController : ControllerBase
 
             var user = await _authRepo.LoginUserAsync(model.Email, model.Password);
 
-            if(user != null)
+            if (user != null)
             {
                 var token = _authRepo.GenerateJwtToken(user);
                 return Ok(new { Token = token });
@@ -89,5 +91,55 @@ public class AuthController : ControllerBase
             return BadRequest("Password reset failed");
         }
         return BadRequest(ModelState);
+    }
+
+    [HttpGet("google-response")]
+    public async Task<IActionResult> GoogleResponse()
+    {
+        var authResult = await HttpContext.AuthenticateAsync("Google");
+
+        // Check if the authentication was successful
+        if (authResult.Succeeded)
+        {
+            // Access user information from Google response
+            var googleId = authResult.Principal.FindFirstValue(ClaimTypes.NameIdentifier);
+            var googleEmail = authResult.Principal.FindFirstValue(ClaimTypes.Email);
+            var googleFirstName = authResult.Principal.FindFirstValue(ClaimTypes.GivenName);
+            var googleLastName = authResult.Principal.FindFirstValue(ClaimTypes.Surname);
+
+            // Find or create the user in your database
+            var user = await _authRepo.FindUserByGoogleIdAsync(googleId);
+            if (user == null)
+            {
+                user = new ApplicationUser
+                {
+                    // Map Google data to ApplicationUser properties
+                    GoogleId = googleId,
+                    GoogleEmail = googleEmail,
+                    GoogleFirstName = googleFirstName,
+                    GoogleLastName = googleLastName,
+
+                    // Other properties (if applicable)
+                };
+
+                // Create the user in your database
+                await _authRepo.RegisterUserAsync(user, null); // Use a placeholder password or null
+            }
+
+            // Log the user in
+            await _authRepo.LoginUserAsync(user.Email, null); // Use a placeholder password or null
+        }
+
+        return RedirectToAction("Home"); // Redirect to your application's home page
+    }
+    [HttpGet("google-login")]
+    public IActionResult GoogleLogin()
+    {
+        var properties = new AuthenticationProperties
+        {
+            RedirectUri = Url.Action("GoogleResponse", "Auth"),
+        };
+
+        return Challenge(properties, "Google");
     }
 }

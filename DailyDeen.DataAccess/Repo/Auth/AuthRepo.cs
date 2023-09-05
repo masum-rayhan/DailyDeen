@@ -79,6 +79,10 @@ public class AuthRepo : IAuthRepo
     {
         return await _db.Users.AnyAsync(u => u.Email == email);
     }
+    public async Task<ApplicationUser> FindUserByGoogleIdAsync(string googleId)
+    {
+        return await _db.Users.SingleOrDefaultAsync(u => u.GoogleId == googleId);
+    }
 
     public string GenerateJwtToken(ApplicationUser user)
     {

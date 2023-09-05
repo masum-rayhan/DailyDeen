@@ -49,6 +49,12 @@ builder.Services.AddSwaggerGen(option =>
     });
 });
 
+// enable CORS for multiple domain
+builder.Services.AddCors(p => p.AddPolicy("CorsPolicy", build =>
+{
+    build.WithOrigins("*").AllowAnyMethod().AllowAnyHeader();
+}));
+
 // Adding Authentication  
 builder.Services.AddAuthentication(options =>
 {
@@ -73,6 +79,13 @@ builder.Services.AddAuthentication(options =>
     };
 });
 
+builder.Services.AddAuthentication()
+    .AddGoogle(googleOptions =>
+    {
+        googleOptions.ClientId = builder.Configuration["Authentication:Google:ClientId"];
+        googleOptions.ClientSecret = builder.Configuration["Authentication:Google:ClientSecret"];
+    });
+
 builder.Services.AddAuthorization();
 
 var app = builder.Build();
@@ -85,6 +98,8 @@ if (app.Environment.IsDevelopment())
 }
 
 app.UseHttpsRedirection();
+
+app.UseCors("CorsPolicy");
 
 app.UseAuthentication();
 app.UseAuthorization();
